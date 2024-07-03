@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+// Structure to represent a sparse matrix
+struct Element {
+    int row;
+    int col;
+    int value;
+};
+
+int main() {
+    int rows, cols, numNonZero;
+    
+    // Input the number of rows, columns and non-zero elements
+    cout << "Enter the number of rows: ";
+    cin >> rows;
+    cout << "Enter the number of columns: ";
+    cin >> cols;
+    cout << "Enter the number of non-zero elements: ";
+    cin >> numNonZero;
+    
+    // Create an array of Elements to store non-zero values
+    Element *elements = new Element[numNonZero];
+    
+    // Input the non-zero elements
+    for (int i = 0; i < numNonZero; i++) {
+        cout << "Enter row, column, and value of element " << i + 1 << ": ";
+        cin >> elements[i].row >> elements[i].col >> elements[i].value;
+    }
+    
+    // Output the details
+    cout << "\nNumber of rows: " << rows;
+    cout << "\nNumber of columns: " << cols;
+    cout << "\nNumber of non-zero elements: " << numNonZero;
+    cout << "\nNon-zero elements (row, column, value):\n";
+    
+    // Print the non-zero elements
+    for (int i = 0; i < numNonZero; i++) {
+        cout << "(" << elements[i].row << ", " << elements[i].col << ", " << elements[i].value << ")\n";
+    }
+    
+    // Deallocate the dynamic memory
+    delete[] elements;
+    
+    return 0;
+}
