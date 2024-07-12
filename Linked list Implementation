@@ -1,0 +1,79 @@
+#include <iostream>
+
+class Node {
+public:
+    int row;
+    int col;
+    int value;
+    Node* next;
+    
+    Node(int r, int c, int v) : row(r), col(c), value(v), next(nullptr) {}
+};
+
+class SparseMatrix {
+private:
+    Node* head;
+
+public:
+    SparseMatrix() : head(nullptr) {}
+
+    void insert(int row, int col, int value) {
+        if (value == 0) return;
+
+        Node* newNode = new Node(row, col, value);
+        if (head == nullptr) {
+            head = newNode;
+            return;
+        }
+
+        Node* current = head;
+        Node* prev = nullptr;
+
+        while (current != nullptr && (current->row < row || (current->row == row && current->col < col))) {
+            prev = current;
+            current = current->next;
+        }
+
+        if (prev == nullptr) {
+            newNode->next = head;
+            head = newNode;
+        } else {
+            newNode->next = current;
+            prev->next = newNode;
+        }
+    }
+
+    int getValue(int row, int col) {
+        Node* current = head;
+        while (current != nullptr) {
+            if (current->row == row && current->col == col) {
+                return current->value;
+            }
+            current = current->next;
+        }
+        return 0; // Default value for non-existing elements in sparse matrix
+    }
+
+    void display() {
+        Node* current = head;
+        while (current != nullptr) {
+            std::cout << "Row: " << current->row << " Column: " << current->col << " Value: " << current->value << std::endl;
+            current = current->next;
+        }
+    }
+};
+
+int main() {
+    SparseMatrix sm;
+    sm.insert(0, 1, 3);
+    sm.insert(1, 2, 4);
+    sm.insert(3, 0, 5);
+
+    std::cout << "Sparse Matrix:" << std::endl;
+    sm.display();
+
+    int value = sm.getValue(1, 2);
+    std::cout << "Value at (1, 2): " << value << std::endl;
+
+    return 0;
+}
