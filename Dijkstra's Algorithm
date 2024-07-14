@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_map>
+#include <limits>
+#include <stack>
+
+using namespace std;
+
+struct Edge {
+    int to;
+    int weight;
+};
+
+struct Node {
+    int vertex;
+    int distance;
+    bool operator>(const Node& other) const {
+        return distance > other.distance;
+    }
+};
+
+void dijkstra(const unordered_map<int, vector<Edge>>& graph, int start, int end) {
+    unordered_map<int, int> distances;
+    unordered_map<int, int> previous;
+    for (const auto& pair : graph) {
+        distances[pair.first] = numeric_limits<int>::max();
+    }
+    distances[start] = 0;
+
+    priority_queue<Node, vector<Node>, greater<Node>> pq;
+    pq.push({start, 0});
+
+    while (!pq.empty()) {
+        int current = pq.top().vertex;
+        pq.pop();
+
+        if (current == end) break;
+
+        for (const Edge& edge : graph.at(current)) {
+            int neighbor = edge.to;
+            int newDist = distances[current] + edge.weight;
+
+            if (newDist < distances[neighbor]) {
+                distances[neighbor] = newDist;
+                previous[neighbor] = current;
+                pq.push({neighbor, newDist});
+            }
+        }
+    }
+
+    if (distances[end] == numeric_limits<int>::max()) {
+        cout << "No path found from " << start << " to " << end << ".\n";
+        return;
+    }
+
+    cout << "Shortest path from " << start << " to " << end << " is " << distances[end] << ".\nPath: ";
+    stack<int> path;
+    for (int at = end; at != start; at = previous[at]) {
+        path.push(at);
+    }
+    path.push(start);
+
+    while (!path.empty()) {
+        cout << path.top() << " ";
+        path.pop();
+    }
+    cout << "\n";
+}
+
+int main() {
+    unordered_map<int, vector<Edge>> graph;
+    graph[0] = {{1, 10}, {4, 3}};
+    graph[1] = {{2, 2}};
+    graph[2] = {{3, 9}};
+    graph[3] = {};
+    graph[4] = {{1, 1}, {2, 8}};
+
+    int start, end;
+    cout << "Enter the starting node: ";
+    cin >> start;
+    cout << "Enter the ending node: ";
+    cin >> end;
+
+    dijkstra(graph, start, end);
+
+    return 0;
+}
