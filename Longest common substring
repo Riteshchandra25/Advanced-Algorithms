@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// Function to find the longest common substring between two strings
+string longestCommonSubstring(const string &str1, const string &str2) {
+    int n = str1.length();
+    vector<vector<int>> lookup(n + 1, vector<int>(n + 1, 0));
+    int maxLength = 0; // Variable to store the length of the longest common substring
+    int endIndex = 0;  // Variable to store the end index of the longest common substring in str1
+
+    // Building the lookup table
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (str1[i - 1] == str2[j - 1]) {
+                lookup[i][j] = lookup[i - 1][j - 1] + 1;
+                if (lookup[i][j] > maxLength) {
+                    maxLength = lookup[i][j];
+                    endIndex = i;
+                }
+            }
+        }
+    }
+
+    // Displaying the lookup table
+    cout << "Lookup Table:" << endl;
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= n; j++) {
+            cout << lookup[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // Returning the longest common substring
+    return str1.substr(endIndex - maxLength, maxLength);
+}
+
+int main() {
+    string str1, str2;
+    cout << "Enter the first string: ";
+    cin >> str1;
+    cout << "Enter the second string: ";
+    cin >> str2;
+
+    if (str1.length() != str2.length()) {
+        cout << "Error: The two strings must be of the same length." << endl;
+        return 1;
+    }
+
+    string result = longestCommonSubstring(str1, str2);
+    cout << "Longest Common Substring: " << result << endl;
+    cout << "Length: " << result.length() << endl;
+
+    return 0;
+}
